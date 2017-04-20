@@ -24,5 +24,13 @@
     "style-loader": "^0.16.1",
     "webpack": "^2.4.1",
     "webpack-dev-server": "^2.4.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jaroldwong/game-of-life.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jaroldwong/game-of-life/issues"
+  },
+  "homepage": "https://github.com/jaroldwong/game-of-life#readme"
 }
