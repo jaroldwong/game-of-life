@@ -1,0 +1,15 @@
+.cell {
+    display: inline-block;
+    background: black;
+    border: 0.5px solid white;
+    width: 12px;
+    height: 12px;
+}
+
+.alive {
+    background: orange;
+}
+
+.grid {
+    width: 700px; /* 16 times W */
+}
