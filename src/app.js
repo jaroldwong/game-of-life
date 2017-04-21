@@ -7,6 +7,7 @@ require('./style.css');
 var width = 10;
 var height = 5;
 var totalSquares = width * height;
+var generation = 0;
 
 var Board = React.createClass({
     getInitialState: function() {
@@ -20,7 +21,8 @@ var Board = React.createClass({
         return(
             <div>
                 <h1>Conway's Game of Life</h1>
-                <Grid cellArray={this.state.game} toggle={this.toggleCell}/>
+                <Grid ref="grid" cellArray={this.state.game} toggle={this.toggleCell} next={this.onNext} />
+                <button onClick={this.onNext}>Next</button>
             </div>
         );
     },
@@ -32,6 +34,10 @@ var Board = React.createClass({
         this.setState(
             {game: cellArray}
         )
+    },
+    onNext: function() {
+        generation++;
+        this.refs.grid.calculateNextGen();
     }
 });
 
@@ -56,7 +62,6 @@ var Grid = React.createClass({
     },
     handleClick: function(index) {
         this.props.toggle(index);
-        this.countLiveNeighbors(index);
     },
     getNeighbors: function(index) {
         var offset = width + 1;
@@ -88,7 +93,37 @@ var Grid = React.createClass({
         }, 0);
         
         return liveNeighbors;
-    }
+    },
+    calculateNextGen: function() {
+        var cells = this.props.cellArray;
+        var deltas = [];
+        var that = this;
+        
+        cells.forEach(function(cell, index) {
+            var liveNeighbors = that.countLiveNeighbors(index);
+
+            // live cell
+            // each cell with one or no neighbors dies
+            // each cell with four or more neighbors dies
+            if (cell) {
+                if (liveNeighbors < 2 || liveNeighbors > 3) {
+                    deltas.push(index);
+                }
+            }
+
+            // each empty space with three neighbors become populated
+            if(!cell) {
+                if (liveNeighbors === 3) {
+                    deltas.push(index);
+                }
+            }
+        })
+
+        // update changes
+        deltas.forEach(function(idx) {
+            that.props.toggle(idx);
+        });
+    },
 })
 
 ReactDOM.render(<Board />, document.getElementById('root'));
