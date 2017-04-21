@@ -4,8 +4,8 @@ var ReactDOM = require('react-dom');
 require('./style.css');
 
 // Game Variables
-var width = 10;
-var height = 5;
+var width = 50;
+var height = 30;
 var totalSquares = width * height;
 var generation = 0;
 
@@ -21,8 +21,11 @@ var Board = React.createClass({
         return(
             <div>
                 <h1>Conway's Game of Life</h1>
-                <Grid ref="grid" cellArray={this.state.game} toggle={this.toggleCell} next={this.onNext} />
+                <Grid ref="grid" cellArray={this.state.game} toggle={this.toggleCell} />
+                <button onClick={this.randomize}>New</button>
                 <button onClick={this.onNext}>Next</button>
+                <button onClick={this.onStart}>Start</button>
+                <button onClick={this.onClear}>Clear</button>
             </div>
         );
     },
@@ -38,7 +41,10 @@ var Board = React.createClass({
     onNext: function() {
         generation++;
         this.refs.grid.calculateNextGen();
-    }
+    },
+    onStart: function() {
+        var intervalID = setInterval(this.onNext, 1000);
+    },
 });
 
 var Grid = React.createClass({
