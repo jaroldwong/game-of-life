@@ -1,7 +1,7 @@
 .cell {
     display: inline-block;
     background: black;
-    border: 0.5px solid white;
+    border: 1px solid white;
     width: 12px;
     height: 12px;
 }
@@ -11,5 +11,5 @@
 }
 
 .grid {
-    width: 700px; /* 16 times W */
+    width: 140px; /* 14* W */
 }
