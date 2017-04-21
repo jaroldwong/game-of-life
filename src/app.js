@@ -4,8 +4,8 @@ var ReactDOM = require('react-dom');
 require('./style.css');
 
 // Game Variables
-var width = 30;
-var height = 20;
+var width = 50;
+var height = 30;
 var totalSquares = width * height;
 var generation = 0;
 
@@ -21,7 +21,7 @@ var Board = React.createClass({
         return(
             <div>
                 <h1>Conway's Game of Life</h1>
-                <Grid ref="grid" cellArray={this.state.game} toggle={this.toggleCell} />
+                <Grid ref="grid" cellArray={this.state.game} toggle={this.toggleCell} update={this.updateCells} />
                 <button onClick={this.onNew}>New</button>
                 <button onClick={this.onNext}>Next</button>
                 <button onClick={this.onStart}>Start</button>
@@ -31,11 +31,15 @@ var Board = React.createClass({
     },
     toggleCell: function(index) {
         var cellArray = this.state.game;
-        var currentState = cellArray[index];
-        cellArray[index] = !currentState;
+        cellArray[index] = !cellArray[index];
 
         this.setState(
             {game: cellArray}
+        )
+    },
+    updateCells: function(cells) {
+        this.setState(
+            {game: cells}
         )
     },
     onNew: function() {
@@ -49,7 +53,14 @@ var Board = React.createClass({
         this.refs.grid.calculateNextGen();
     },
     onStart: function() {
-        var game = setInterval(this.refs.grid.calculateNextGen, 500);
+        this.simId;
+
+        if(!this.simId) {
+            this.simId = setInterval(this.onNext, 300);
+        } else {
+            clearInterval(this.simId);
+            this.simId = null;           
+        }
     },
     onClear: function() {
         generation = 0;
@@ -120,16 +131,12 @@ var Grid = React.createClass({
         cells.forEach(function(cell, index) {
             var liveNeighbors = that.countLiveNeighbors(index);
 
-            // live cell
-            // each cell with one or no neighbors dies
-            // each cell with four or more neighbors dies
             if (cell) {
                 if (liveNeighbors < 2 || liveNeighbors > 3) {
                     deltas.push(index);
                 }
             }
 
-            // each empty space with three neighbors become populated
             if(!cell) {
                 if (liveNeighbors === 3) {
                     deltas.push(index);
@@ -139,8 +146,10 @@ var Grid = React.createClass({
 
         // update changes
         deltas.forEach(function(idx) {
-            that.props.toggle(idx);
-        });
+            cells[idx] = !cells[idx];
+        })
+
+        this.props.update(cells);
     },
 })
 
